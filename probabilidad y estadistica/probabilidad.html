@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probabilidad y Estadística | PreparaPAU</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Probabilidad y Estadística</h1>
+            <p>Distribuciones Binomial y Normal | Estadística Descriptiva | PreparaPAU</p>
+        </div>
+
+        <div class="main-content">
+            <div class="calculator-tabs">
+                <button class="tab-btn active" data-tab="binomial">🎯 Binomial</button>
+                <button class="tab-btn" data-tab="normal">📈 Normal</button>
+                <button class="tab-btn" data-tab="descriptiva">📊 Descriptiva</button>
+            </div>
+
+            <!-- Binomial -->
+            <div class="tab-content active" id="binomial-tab">
+                <div class="examples-section">
+                    <h3>📚 Ejemplos Rápidos</h3>
+                    <div class="example-buttons">
+                        <button class="btn btn-example" onclick="loadBinomialExample(1)">Monedas</button>
+                        <button class="btn btn-example" onclick="loadBinomialExample(2)">Dados</button>
+                        <button class="btn btn-example" onclick="loadBinomialExample(3)">Defectuosos</button>
+                        <button class="btn btn-example" onclick="loadBinomialExample(4)">Examen</button>
+                        <button class="btn toggle-steps" onclick="toggleSteps('binomial')">👁️ Mostrar pasos</button>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <h3>🎯 Distribución Binomial</h3>
+                    <div class="input-group">
+                        <div class="form-group">
+                            <label for="binomial-n">Número de ensayos (n):</label>
+                            <input type="number" id="binomial-n" class="form-input" min="1" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="binomial-p">Probabilidad de éxito (p):</label>
+                            <input type="number" id="binomial-p" class="form-input" min="0" max="1" step="0.01" value="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label for="binomial-k">Número de éxitos (k):</label>
+                            <input type="number" id="binomial-k" class="form-input" min="0" value="5">
+                        </div>
+                    </div>
+                    
+                    <div class="probability-type-selector">
+                        <button class="prob-type-btn active" data-type="exact">P(X = k)</button>
+                        <button class="prob-type-btn" data-type="less">P(X ≤ k)</button>
+                        <button class="prob-type-btn" data-type="greater">P(X ≥ k)</button>
+                        <button class="prob-type-btn" data-type="between">P(a ≤ X ≤ b)</button>
+                    </div>
+                    
+                    <div id="between-inputs" style="display:none;">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label for="binomial-a">Valor mínimo (a):</label>
+                                <input type="number" id="binomial-a" class="form-input" min="0" value="3">
+                            </div>
+                            <div class="form-group">
+                                <label for="binomial-b">Valor máximo (b):</label>
+                                <input type="number" id="binomial-b" class="form-input" min="0" value="7">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="calculateBinomial()">🧮 Calcular</button>
+                </div>
+
+                <div class="result-section" id="binomial-result" style="display:none;">
+                    <h3 class="result-title">📊 Resultado</h3>
+                    <div id="binomial-output"></div>
+                    <div id="binomial-steps" class="steps-container" style="display:none;"></div>
+                    <div class="condition-checker" id="binomial-conditions"></div>
+                    <button class="btn" onclick="copyResults('binomial')">📋 Copiar</button>
+                    <button class="btn" onclick="exportResults('binomial')">💾 Exportar</button>
+                </div>
+
+                <div class="chart-container" id="binomial-chart-container" style="display:none;">
+                    <h3>📈 Gráfico de Distribución</h3>
+                    <canvas id="binomial-chart"></canvas>
+                    <button class="btn" onclick="downloadChartPNG('binomial-chart', 'distribucion_binomial')">🖼️ Descargar PNG</button>
+                </div>
+            </div>
+
+            <!-- Normal -->
+            <div class="tab-content" id="normal-tab">
+                <div class="examples-section">
+                    <h3>📚 Ejemplos Rápidos</h3>
+                    <div class="example-buttons">
+                        <button class="btn btn-example" onclick="loadNormalExample(1)">Alturas</button>
+                        <button class="btn btn-example" onclick="loadNormalExample(2)">Pesos</button>
+                        <button class="btn btn-example" onclick="loadNormalExample(3)">Notas</button>
+                        <button class="btn btn-example" onclick="loadNormalExample(4)">Tiempo</button>
+                        <button class="btn toggle-steps" onclick="toggleSteps('normal')">👁️ Mostrar pasos</button>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <h3>📈 Distribución Normal</h3>
+                    <div class="input-group">
+                        <div class="form-group">
+                            <label for="normal-mean">Media (μ):</label>
+                            <input type="number" id="normal-mean" class="form-input" step="0.01" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="normal-std">Desviación estándar (σ):</label>
+                            <input type="number" id="normal-std" class="form-input" min="0.01" step="0.01" value="15">
+                        </div>
+                        <div class="form-group">
+                            <label for="normal-x">Valor (x):</label>
+                            <input type="number" id="normal-x" class="form-input" step="0.01" value="110">
+                        </div>
+                    </div>
+                    
+                    <div class="probability-type-selector">
+                        <button class="prob-type-btn active" data-type="less">P(X ≤ x)</button>
+                        <button class="prob-type-btn" data-type="greater">P(X ≥ x)</button>
+                        <button class="prob-type-btn" data-type="between">P(a ≤ X ≤ b)</button>
+                    </div>
+                    
+                    <div id="normal-between-inputs" style="display:none;">
+                        <div class="input-group">
+                            <div class="form-group">
+                                <label for="normal-a">Valor mínimo (a):</label>
+                                <input type="number" id="normal-a" class="form-input" step="0.01" value="90">
+                            </div>
+                            <div class="form-group">
+                                <label for="normal-b">Valor máximo (b):</label>
+                                <input type="number" id="normal-b" class="form-input" step="0.01" value="120">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="calculateNormal()">🧮 Calcular</button>
+                </div>
+
+                <div class="result-section" id="normal-result" style="display:none;">
+                    <h3 class="result-title">📊 Resultado</h3>
+                    <div id="normal-output"></div>
+                    <div id="normal-steps" class="steps-container" style="display:none;"></div>
+                    <button class="btn" onclick="copyResults('normal')">📋 Copiar</button>
+                    <button class="btn" onclick="exportResults('normal')">💾 Exportar</button>
+                </div>
+
+                <div class="chart-container" id="normal-chart-container" style="display:none;">
+                    <h3>📈 Gráfico de Distribución</h3>
+                    <canvas id="normal-chart"></canvas>
+                    <button class="btn" onclick="downloadChartPNG('normal-chart', 'distribucion_normal')">🖼️ Descargar PNG</button>
+                </div>
+            </div>
+
+            <!-- Descriptiva -->
+            <div class="tab-content" id="descriptiva-tab">
+                <div class="examples-section">
+                    <h3>📚 Ejemplos Rápidos</h3>
+                    <div class="example-buttons">
+                        <button class="btn btn-example" onclick="loadDescriptivaExample(1)">Notas clase</button>
+                        <button class="btn btn-example" onclick="loadDescriptivaExample(2)">Ventas mes</button>
+                        <button class="btn btn-example" onclick="loadDescriptivaExample(3)">Temperaturas</button>
+                        <button class="btn btn-example" onclick="loadDescriptivaExample(4)">Edades grupo</button>
+                        <button class="btn toggle-steps" onclick="toggleSteps('descriptiva')">👁️ Mostrar pasos</button>
+                    </div>
+                </div>
+
+                <div class="input-section">
+                    <h3>📊 Estadística Descriptiva</h3>
+                    <div class="form-group">
+                        <label for="descriptiva-data">Datos (separados por comas o espacios):</label>
+                        <div class="data-input-area">
+                            <textarea id="descriptiva-data" class="data-textarea" placeholder="Ejemplo: 85, 90, 78, 92, 88, 76, 95, 82, 89, 91">85, 90, 78, 92, 88, 76, 95, 82, 89, 91</textarea>
+                            <div class="data-example">Ej: 1,2,3 o 1 2 3</div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="calculateDescriptiva()">🧮 Calcular</button>
+                </div>
+
+                <div class="result-section" id="descriptiva-result" style="display:none;">
+                    <h3 class="result-title">📊 Resultados</h3>
+                    <div id="descriptiva-output"></div>
+                    <div id="descriptiva-steps" class="steps-container" style="display:none;"></div>
+                    <button class="btn" onclick="copyResults('descriptiva')">📋 Copiar</button>
+                    <button class="btn" onclick="exportResults('descriptiva')">💾 Exportar</button>
+                </div>
+
+                <div class="chart-container" id="descriptiva-chart-container" style="display:none;">
+                    <h3>📈 Gráficos</h3>
+                    <canvas id="descriptiva-chart"></canvas>
+                    <button class="btn" onclick="downloadChartPNG('descriptiva-chart', 'estadistica_descriptiva')">🖼️ Descargar PNG</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
