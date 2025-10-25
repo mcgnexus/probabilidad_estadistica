@@ -240,16 +240,12 @@ function applyProbType(calc, type) {
 // BINOMIAL
 // ------------------------------------
 function calculateBinomial() {
-    console.log('calculateBinomial iniciada');
-    
     const n = parseInt(document.getElementById('binomial-n').value);
     const p = parseFloat(document.getElementById('binomial-p').value);
     const k = parseInt(document.getElementById('binomial-k').value);
     const a = parseInt(document.getElementById('binomial-a').value);
     const b = parseInt(document.getElementById('binomial-b').value);
     const type = currentProbType.binomial;
-
-    console.log('Valores obtenidos:', {n, p, k, a, b, type});
 
     if (isNaN(n) || isNaN(p) || n <= 0 || p < 0 || p > 1) {
         alert('Por favor, introduce valores válidos para n y p.');
@@ -259,8 +255,6 @@ function calculateBinomial() {
         alert('Revisa el valor de k (debe ser ≥ 0).');
         return;
     }
-
-    console.log('Validaciones pasadas');
 
     let prob = 0;
     let range = {};
@@ -284,26 +278,18 @@ function calculateBinomial() {
         range.b = b;
     }
 
-    console.log('Probabilidad calculada:', prob);
-
     const stats = {
         mean: n * p,
         var: n * p * (1 - p),
         sd: Math.sqrt(n * p * (1 - p))
     };
 
-    console.log('Estadísticas:', stats);
-
     const conditions = checkBinomialConditions(n, p);
     const stepsArray = calculateBinomialSteps(n, p, k, type, range, prob, stats, conditions);
     const steps = stepsArray.join('<br>');
-    
-    console.log('Pasos generados:', steps);
-    
+
     displayBinomialResult(prob, stats, steps);
     createBinomialChart(n, p, range, type);
-    
-    console.log('calculateBinomial completada');
 }
 
 function calculateBinomialSteps(n, p, k, type, range, prob, stats, cond) {
@@ -340,8 +326,6 @@ function calculateBinomialSteps(n, p, k, type, range, prob, stats, cond) {
 }
 
 function checkBinomialConditions(n, p) {
-    // Comentar o eliminar esta línea que causa el error
-    // const contentDiv = document.getElementById('binomial-conditions-content');
     const q = 1 - p;
     const np = n * p;
     const nq = n * q;
@@ -352,8 +336,6 @@ function checkBinomialConditions(n, p) {
     const approxOk = (np >= 5 && nq >= 5);
     items.push(`<div>Validez aproximación Normal: np = ${np.toFixed(2)}, nq = ${nq.toFixed(2)} → ${approxOk ? '<span class="ok">Válida</span>' : '<span class="warn">No recomendada</span>'}</div>`);
 
-    // Comentar esta línea también ya que contentDiv no existe
-    // contentDiv.innerHTML = items.join('');
     return {normalOk: approxOk};
 }
 
@@ -453,16 +435,11 @@ function createBinomialChart(n, p, rng, type) {
 
 // ------------------------------------\n// NORMAL\n// ------------------------------------
 function calculateNormal() {
-    console.log('calculateNormal() iniciada');
-    
     const mu = parseFloat(document.getElementById('normal-mean').value);
     const sigma = parseFloat(document.getElementById('normal-std').value);
     const type = currentProbType.normal;
-    
-    console.log('Parámetros:', { mu, sigma, type });
 
     if (!Number.isFinite(mu) || !Number.isFinite(sigma) || sigma <= 0) {
-        console.log('Error en validación de parámetros');
         alert('Revisa μ y σ (σ debe ser > 0).');
         return;
     }
@@ -473,16 +450,11 @@ function calculateNormal() {
 
     const fmt = (x) => x.toLocaleString('es-ES', {maximumFractionDigits: 6});
 
-    console.log('Procesando tipo:', type);
-
     if (type === 'less' || type === 'greater') {
-        console.log('Procesando less/greater');
         const x = parseFloat(document.getElementById('normal-x').value);
-        console.log('Valor x:', x);
-        if (!Number.isFinite(x)) { 
-            console.log('Error: x no es finito');
-            alert('Revisa el valor de X.'); 
-            return; 
+        if (!Number.isFinite(x)) {
+            alert('Revisa el valor de X.');
+            return;
         }
         const z = (x - mu) / sigma;
         if (type === 'less') {
@@ -496,14 +468,11 @@ function calculateNormal() {
         }
         values = [x];
     } else if (type === 'between') {
-        console.log('Procesando between');
         const a = parseFloat(document.getElementById('normal-a').value);
         const b = parseFloat(document.getElementById('normal-b').value);
-        console.log('Valores a, b:', a, b);
-        if (!Number.isFinite(a) || !Number.isFinite(b)) { 
-            console.log('Error: a o b no son finitos');
-            alert('Revisa a y b.'); 
-            return; 
+        if (!Number.isFinite(a) || !Number.isFinite(b)) {
+            alert('Revisa a y b.');
+            return;
         }
         const lo = Math.min(a,b), hi=Math.max(a,b);
         const za = (lo - mu)/sigma, zb = (hi - mu)/sigma;
@@ -512,12 +481,10 @@ function calculateNormal() {
         steps.push(`P(${fmt(lo)} < X < ${fmt(hi)}) = Φ(z_b) - Φ(z_a) = ${fmt(prob)}`);
         values = [lo, hi];
     } else if (type === 'percentile') {
-        console.log('Procesando percentile');
         const p = parseFloat(document.getElementById('percentile-value').value);
-        if (!Number.isFinite(p) || p < 0 || p > 100) { 
-            console.log('Error: percentil inválido');
-            alert('Revisa el percentil (0-100).'); 
-            return; 
+        if (!Number.isFinite(p) || p < 0 || p > 100) {
+            alert('Revisa el percentil (0-100).');
+            return;
         }
         const x = findPercentile(p/100, mu, sigma);
         steps.push(`x_${fmt(p)}: Φ((x-μ)/σ) = ${p/100}`);
@@ -526,8 +493,6 @@ function calculateNormal() {
         values = [x];
     }
 
-    console.log('Resultado calculado:', { prob, steps, values });
-
     // Mostrar resultados
     let content = '';
     if (type === 'percentile') {
@@ -535,9 +500,7 @@ function calculateNormal() {
     } else {
         content = `<div><strong>Probabilidad:</strong> ${prob.toLocaleString('es-ES', {maximumFractionDigits: 10})}</div>`;
     }
-    
-    console.log('Contenido a mostrar:', content);
-    
+
     document.getElementById('normal-output').innerHTML = content;
     document.getElementById('normal-result').style.display = 'block';
 
@@ -545,10 +508,7 @@ function calculateNormal() {
         steps.map(s => `<div class="step">${s}</div>`).join('');
     document.getElementById('normal-steps').style.display = showSteps.normal ? 'block' : 'none';
 
-    console.log('Llamando a createNormalChart');
     createNormalChart(mu, sigma, values);
-    
-    console.log('calculateNormal() completada');
 }
 
 function createNormalChart(mu, sigma, values) {
