@@ -974,11 +974,11 @@ function saveState() {
             showSteps: { ...showSteps },
             inputs: {
                 binomial: {
-                    n: document.getElementById('n-binomial')?.value,
-                    p: document.getElementById('p-binomial')?.value,
-                    k: document.getElementById('k-binomial')?.value,
-                    a: document.getElementById('a-binomial')?.value,
-                    b: document.getElementById('b-binomial')?.value
+                    n: document.getElementById('binomial-n')?.value,
+                    p: document.getElementById('binomial-p')?.value,
+                    k: document.getElementById('binomial-k')?.value,
+                    a: document.getElementById('binomial-a')?.value,
+                    b: document.getElementById('binomial-b')?.value
                 },
                 normal: {
                     mu: document.getElementById('normal-mean')?.value,
